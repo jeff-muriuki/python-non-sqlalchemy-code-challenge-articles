@@ -1,112 +1,100 @@
 class Article:
     all= []
-    def __init__(self, author, magazine, title):
-        if not isinstance(title, str) or not (5 <= len(title) <= 50):
+    def __init__(self,author, magazine, title):
+        self.author= author
+        self.magazine= magazine
+        if isinstance(title, str) and 5 <= len(title) <= 50:
+            self._title= title
+        else:
             raise ValueError('title must be...')
-        self._title = title
-        self.author = author
-        self.magazine = magazine
-        #self._author= None
-        #self._magazine= None
         Article.all.append(self)
-        
+
     @property
     def title(self):
-        return self._title    
+        return self._title
     
     @property
     def author(self):
-        return self._author        
-
+        return self._author
+   
     @author.setter
     def author(self, value):
-        if not isinstance(value, Author):
-            raise Exception('invalid Author')
-        self._author= value
-
+        if isinstance(value, Author):
+            self._author= value
+        else:
+            raise ValueError('author must be...')
+        
     @property
     def magazine(self):
         return self._magazine
-
+   
     @magazine.setter
     def magazine(self, value):
-        if not isinstance (value, Magazine):
-            raise Exception('Invalid Magazine')
-        self._magazine= value
-
+        if isinstance(value, Magazine):
+            self._magazine= value
+        else:
+            raise ValueError('magazine must be...')    
 
 class Author:
     all= []
-
     def __init__(self, name):
-        if not isinstance(name, str) or len(name) == 0:
-            raise ValueError('Name must be string')
-        self._name = name
-        self._articles= []
+        if  isinstance(name, str) and len(name) > 0:
+            self._name= name
+        else:
+            raise ValueError('Name must be...')    
         Author.all.append(self)
-        
 
     @property
     def name(self):
-        return self._name    
-    #@property
-    def articles(self):
-        #return self._articles
-        return [article for article in Article.all if article.author == self]
+        return self._name      
 
+    def articles(self):
+        return [article for article in Article.all if article.author== self]  
+    
     def magazines(self):
         return list(set(article.magazine for article in self.articles()))
 
     def add_article(self, magazine, title):
         if not isinstance(magazine, Magazine):
-            raise Exception("Invalid magazine")
-        article = Article(self, magazine, title)
-        #self._articles.append(article)
+            raise Exception('article must...')
+        article= Article(self, magazine, title)
         return article
-
+    
     def topic_areas(self):
         if not self.articles():
             return None
-        categories = set(article.magazine.category for article in self.articles())
-        return list(categories)
+        return list(set(article.magazine.category for article in self.articles()))
 
 class Magazine:
     all= []
     def __init__(self, name, category):
-        if not isinstance(name, str) or not (2 <= len(name) <= 16):
-            raise ValueError('name must be of type str and ...')
-        self._name = name
-        if not isinstance(category, str) or len(category) == 0:
-            raise TypeError('category must be a non-empty string')
-        self._category= category
-        #self._articles = []
+        self.name= name
+        self.category = category
         Magazine.all.append(self)
 
     @property
     def name(self):
-        return self._name
-    
+        return self._name 
     @name.setter
-    def name(self, value):
-        if not isinstance(value, str) or not (2 <= len(value) <= 16):
-            raise ValueError('Name must be a string and between 2 and 16 characters')
-        self._name = value
-    
+    def name(self, name):
+        if isinstance (name,str) and 2 <= len(name) <= 16:
+            self._name= name
+        else:
+            raise ValueError('Name must be ...')    
+
     @property
     def category(self):
         return self._category
-    
     @category.setter
-    def category(self, value):
-        if not isinstance(value, str) or len(value) == 0:
-            raise ValueError('category must be ...')
-        self._category= value
-    
-    #@property
-    def articles(self):
-        #return self._articles
-        return [article for article in Article.all if article.magazine == self]
+    def category(self, category):
+        if isinstance(category, str) and len(category) > 0:
+            self._category= category
+        else:
+            raise ValueError('category must be...')    
 
+    def articles(self):
+        return [article for article in Article.all if article.magazine== self ]
+    
     def contributors(self):
         return list(set(article.author for article in self.articles()))
 
@@ -125,4 +113,3 @@ class Magazine:
         contributing_authors = [author for author, count in author_counts.items() if count > 2]
 
         return contributing_authors if contributing_authors else None
-
